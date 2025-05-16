@@ -1,0 +1,11 @@
+Uploading file...
+inside next
+clicked next
+inside next
+clicked next
+Process banner still visible... Refreshing [Attempt 1]
+Waiting for either Import failed or Import passed banner to appear...
+Import banner not visible yet... Refreshing [Attempt 1]
+Import banner not visible yet... Refreshing [Attempt 2]
+Import banner not visible yet... Refreshing [Attempt 3]
+Import banner not visible yet... Refreshing [Attempt 4]

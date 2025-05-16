@@ -1,0 +1,89 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Employee Excel Upload >> Upload Excel and verify updated employee data in UI
+- Location: E:\Mahendra\WorkSpace\playwrightpractice\tests\employee_upload.test.ts:17:7
+
+# Error details
+
+```
+Error: locator.click: Test ended.
+Call log:
+  - waiting for locator('//span[contains(@class,\'dsm-linkbtn upload-btn\')]')
+    - locator resolved to <span class="dsm-linkbtn upload-btn">Browse File</span>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is not stable
+  - retrying click action
+    - waiting for element to be visible, enabled and stable
+  - element was detached from the DOM, retrying
+
+    at EmployeesPage.click_on_browse_button (E:\Mahendra\WorkSpace\playwrightpractice\pages\peopleInfo\EmployeesPage.ts:41:33)
+    at E:\Mahendra\WorkSpace\playwrightpractice\tests\employee_upload.test.ts:31:18
+```
+
+# Test source
+
+```ts
+   1 | import { Locator, Page } from "@playwright/test";
+   2 |
+   3 |
+   4 | export class EmployeesPage {
+   5 |
+   6 |     readonly page: Page;
+   7 |     readonly importDropdown: Locator;
+   8 |     readonly employeeDropdown: Locator;
+   9 |     readonly updateExisting: Locator;
+  10 |     readonly browseButton: Locator;
+  11 |     readonly nextButton: Locator;
+  12 |     readonly continueButton:Locator;
+  13 |     readonly importButton:Locator;
+  14 |     readonly processMessage:Locator;
+  15 |
+  16 |     constructor(page: Page) {
+  17 |         this.page = page
+  18 |         this.importDropdown = page.locator("//button[normalize-space()='Import']");
+  19 |         this.employeeDropdown = page.locator('//span[normalize-space()="Employee"]');
+  20 |         this.updateExisting = page.locator('//a[normalize-space()="Update Existing"]');
+  21 |         this.browseButton = page.locator("//span[contains(@class,'dsm-linkbtn upload-btn')]");
+  22 |         this.nextButton=page.locator("//button[normalize-space()='Next']");
+  23 |         this.continueButton=page.locator("//button[normalize-space()='Continue']");
+  24 |         this.importButton=page.locator("//button[normalize-space()='Import']");
+  25 |         this.processMessage=page.locator("//span[@class='progess-message']");
+  26 |     }
+  27 |
+  28 |     async click_on_import_dropdown() {
+  29 |         await this.importDropdown.click();
+  30 |     }
+  31 |
+  32 |     async click_on_employee_dropdown() {
+  33 |         await this.employeeDropdown.click();
+  34 |     }
+  35 |
+  36 |     async click_on_update_existing() {
+  37 |         await this.updateExisting.click();
+  38 |     }
+  39 |
+  40 |     async click_on_browse_button() {
+> 41 |         await this.browseButton.click();
+     |                                 ^ Error: locator.click: Test ended.
+  42 |     }
+  43 |
+  44 |     async click_on_next_button(){
+  45 |         await this.nextButton.click();
+  46 |     }
+  47 |
+  48 |     async click_on_continue_button(){
+  49 |         await this.continueButton.click();
+  50 |     }
+  51 |
+  52 |     async click_on_import_button(){
+  53 |         await this.importButton.click();
+  54 |     }
+  55 | }
+```

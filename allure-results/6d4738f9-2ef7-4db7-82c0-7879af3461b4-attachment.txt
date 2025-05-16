@@ -1,0 +1,6 @@
+Uploading file...
+inside next
+clicked next
+inside next
+clicked next
+Waiting for either Import failed or Import passed banner to appear...

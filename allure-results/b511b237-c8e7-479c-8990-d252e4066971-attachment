@@ -1,0 +1,100 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Employee Excel Upload >> Upload Excel and verify updated employee data in UI
+- Location: E:\Mahendra\WorkSpace\playwrightpractice\tests\employee_upload.test.ts:17:7
+
+# Error details
+
+```
+Error: locator.textContent: Test ended.
+Call log:
+  - waiting for locator('//p[normalize-space()=\'Development\']')
+
+    at E:\Mahendra\WorkSpace\playwrightpractice\tests\employee_upload.test.ts:66:46
+```
+
+# Test source
+
+```ts
+   1 | import { expect } from '@playwright/test';
+   2 | import path from 'path';
+   3 | import { createExcelFromJson } from '../utils/generate_excel';
+   4 | import employeeUpdates from '../testdata/employee_updates.json';
+   5 | import { test } from '../fixtures/fixtures.spec';
+   6 | import { SideNavigation } from '../pages/SideNavigationPage';
+   7 | import { waitUntilBannersDisappear } from '../utils/wait_helpers';
+   8 |
+   9 | const excelPath = path.resolve(__dirname, '../upload/generated_employee_update.xlsx');
+  10 |
+  11 | test.describe('Employee Excel Upload', () => {
+  12 |   test.beforeAll(() => {
+  13 |     // Generate Excel from JSON before tests run
+  14 |     createExcelFromJson(employeeUpdates, excelPath);
+  15 |   });
+  16 |
+  17 |   test('Upload Excel and verify updated employee data in UI', async ({ loginPage, homePage, employeePage, page, sideNavigation }) => {
+  18 |
+  19 |     await loginPage.navigate_to_url();
+  20 |     await loginPage.Login_as_admin();
+  21 |     await page.waitForLoadState('networkidle'); // Wait until no network requests for 500ms
+  22 |     await homePage.verify_homePage_title();
+  23 |
+  24 |     //navigate to people Info employee
+  25 |     sideNavigation.clickPeopleInfo();
+  26 |
+  27 |     //select employee update dropdown
+  28 |     employeePage.click_on_employee_dropdown();
+  29 |     employeePage.click_on_import_dropdown();
+  30 |     employeePage.click_on_update_existing();
+  31 |     employeePage.click_on_browse_button();
+  32 |     employeePage.click_on_next_button()
+  33 |
+  34 |     // 2. Upload the Excel file
+  35 |     try {
+  36 |       console.log('Uploading file...');
+  37 |       await page.setInputFiles('input[type="file"]', excelPath);
+  38 |     } catch (err) {
+  39 |       console.error('Upload failed:', err);
+  40 |       throw err; // rethrow to fail test properly
+  41 |     }
+  42 |     await employeePage.click_on_next_button();
+  43 |     await employeePage.click_on_continue_button();
+  44 |     await employeePage.click_on_import_button();
+  45 |     await waitUntilBannersDisappear(
+  46 |       page,
+  47 |       "//span[@class='progess-message']", // Process banner
+  48 |       "//div[contains(text(),'Import failed. Check your email for details and tr')]",
+  49 |       "//div[contains(text(),'Import completed successfully')]"
+  50 |     );
+  51 |   
+  52 |     // 3. Wait for upload confirmation
+  53 |     //await expect(page.locator('.toast-success')).toContainText('Upload successful');
+  54 |
+  55 |     // 4. Loop through each employee and validate updated UI fields
+  56 |     for (const emp of employeeUpdates) {
+  57 |       const url = `https://qa-portal.mewurk.com/peopleinfo/directory/${emp['Employee ID*']}/profile/job-info`;
+  58 |       await page.goto(url);
+  59 |       //await page.goto(`https://qa-portal.mewurk.com/peopleinfo/directory/100000022185/profile/job-info`);
+  60 |       await page.waitForLoadState('domcontentloaded');
+  61 |
+  62 |       // Validate selected fields (example: First Name, Department, Status)
+  63 |       // const departmentText = page.locator("//p[normalize-space()='Development']");
+  64 |       // await expect(departmentText).toHaveText(emp["Department"]);
+  65 |       const departmentText = page.locator("//p[normalize-space()='Development']");
+> 66 |       const deptValue = await departmentText.textContent();
+     |                                              ^ Error: locator.textContent: Test ended.
+  67 |
+  68 |       console.log(`✅ Validating Department: Expected = ${emp["Department"]}, Actual = ${deptValue?.trim()}`);
+  69 |
+  70 |       await expect(departmentText).toHaveText(emp["Department"]);
+  71 |     }
+  72 |   });
+  73 | });
+  74 |
+```

@@ -1,0 +1,80 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Employee Excel Upload >> Upload Excel and verify updated employee data in UI
+- Location: E:\Mahendra\WorkSpace\playwrightpractice\tests\employee_upload.test.ts:18:7
+
+# Error details
+
+```
+Error: locator.click: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('//span[normalize-space()="Employee"]')
+
+    at EmployeesPage.click_on_employee_dropdown (E:\Mahendra\WorkSpace\playwrightpractice\pages\peopleInfo\EmployeesPage.ts:31:37)
+    at E:\Mahendra\WorkSpace\playwrightpractice\tests\employee_upload.test.ts:27:31
+```
+
+# Test source
+
+```ts
+   1 | import { Locator, Page } from "@playwright/test";
+   2 |
+   3 |
+   4 | export class EmployeesPage {
+   5 |
+   6 |     readonly importDropdown: Locator;
+   7 |     readonly employeeDropdown: Locator;
+   8 |     readonly updateExisting: Locator;
+   9 |     readonly browseButton: Locator;
+  10 |     readonly nextButton: Locator;
+  11 |     readonly continueButton:Locator;
+  12 |     readonly importButton:Locator;
+  13 |     readonly processMessage:Locator;
+  14 |
+  15 |     constructor(private page:Page) {
+  16 |         this.importDropdown = page.locator("//button[normalize-space()='Import']");
+  17 |         this.employeeDropdown = page.locator('//span[normalize-space()="Employee"]');
+  18 |         this.updateExisting = page.locator('//a[normalize-space()="Update Existing"]');
+  19 |         this.browseButton = page.locator("//span[contains(@class,'dsm-linkbtn upload-btn')]");
+  20 |         this.nextButton=page.locator("//button[normalize-space()='Next']");
+  21 |         this.continueButton=page.locator("//button[normalize-space()='Continue']");
+  22 |         this.importButton=page.locator("//button[normalize-space()='Import']");
+  23 |         this.processMessage=page.locator("//span[@class='progess-message']");
+  24 |     }
+  25 |
+  26 |     async click_on_import_dropdown() {
+  27 |         await this.importDropdown.click();
+  28 |     }
+  29 |
+  30 |     async click_on_employee_dropdown() {
+> 31 |         await this.employeeDropdown.click();
+     |                                     ^ Error: locator.click: Target page, context or browser has been closed
+  32 |     }
+  33 |
+  34 |     async click_on_update_existing() {
+  35 |         await this.updateExisting.click();
+  36 |     }
+  37 |
+  38 |     async click_on_browse_button() {
+  39 |         await this.browseButton.click();
+  40 |     }
+  41 |
+  42 |     async click_on_next_button(){
+  43 |         await this.nextButton.click();
+  44 |     }
+  45 |
+  46 |     async click_on_continue_button(){
+  47 |         await this.continueButton.click();
+  48 |     }
+  49 |
+  50 |     async click_on_import_button(){
+  51 |         await this.importButton.click();
+  52 |     }
+  53 | }
+```

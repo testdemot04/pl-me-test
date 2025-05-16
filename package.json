@@ -1,0 +1,24 @@
+{
+  "name": "playwrightpractice",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test --project chromium",
+    "test:report": "npx playwright test && npx playwright show-report --project chromium"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^22.14.0",
+    "@types/xlsx": "^0.0.35",
+    "allure-playwright": "^3.2.1"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "exceljs": "^4.4.0",
+    "xlsx": "^0.18.5"
+  }
+}

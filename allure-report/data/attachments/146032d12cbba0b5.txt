@@ -1,0 +1,70 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Employee Excel Upload >> Upload Excel and verify updated employee data in UI
+- Location: E:\Mahendra\WorkSpace\playwrightpractice\tests\employee_upload.test.ts:18:7
+
+# Error details
+
+```
+Error: locator.waitFor: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('//div[contains(text(),\'Import completed successfully\')]') to be visible
+
+    at waitUntilBannersDisappear (E:\Mahendra\WorkSpace\playwrightpractice\utils\wait_helpers.ts:35:29)
+    at E:\Mahendra\WorkSpace\playwrightpractice\tests\employee_upload.test.ts:43:5
+```
+
+# Test source
+
+```ts
+   1 | import {Page} from '@playwright/test'
+   2 |
+   3 | export async function waitUntilBannersDisappear(
+   4 |   page: Page,
+   5 |   processBannerSelector: string,
+   6 |   failedImportSelector: string,
+   7 |   passedImportSelector: string,
+   8 |   maxRetries = 10
+   9 | ): Promise<void> {
+  10 |   let attempt = 0;
+  11 |
+  12 |   // Step 1: Wait for process banner to disappear (with refresh)
+  13 |   while (attempt < maxRetries) {
+  14 |     const isVisible = await page.locator(processBannerSelector).isVisible().catch(() => false);
+  15 |     if (!isVisible) break;
+  16 |
+  17 |     console.log(`Process banner still visible... Refreshing [Attempt ${attempt + 1}]`);
+  18 |     await page.waitForTimeout(10000); // 10 sec
+  19 |     await page.reload();
+  20 |     attempt++;
+  21 |   }
+  22 |
+  23 |   if (attempt === maxRetries) {
+  24 |     throw new Error("Process banner did not disappear after maximum retries.");
+  25 |   }
+  26 |
+  27 |   // Step 2: Wait for either the "Import failed" or "Import passed" banner to appear
+  28 |   console.log("Waiting for either Import failed or Import passed banner to appear...");
+  29 |
+  30 |   const importStatusLocator = await page.locator(failedImportSelector).isVisible()
+  31 |     ? page.locator(failedImportSelector)
+  32 |     : page.locator(passedImportSelector);
+  33 |
+  34 |   // Wait for the import status banner (either success or failure) to appear
+> 35 |   await importStatusLocator.waitFor({ state: 'visible', timeout: 600000 }); // 10 minutes
+     |                             ^ Error: locator.waitFor: Target page, context or browser has been closed
+  36 |   console.log("Import status banner appeared.");
+  37 |
+  38 |   // Step 3: Wait for the import status banner (either success or failure) to disappear
+  39 |   console.log("Waiting for import status banner to disappear...");
+  40 |   await importStatusLocator.waitFor({ state: 'hidden', timeout: 600000 }); // 10 minutes
+  41 |   console.log("Import status banner disappeared.");
+  42 | }
+  43 |
+```

@@ -22,4 +22,4 @@ export class LeaveFlow {
     //     await this.pages.leaveApprovalPage.openPendingRequests();
     //     await this.pages.leaveApprovalPage.approveLeave();
     //   }
-}
+}}

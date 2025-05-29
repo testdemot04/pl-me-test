@@ -3,13 +3,13 @@
 export const users = {
 
     admin: {
-        emailId: 'admin@gvk.com',
-        password: 'Mewurk@123'
+        emailId: 'admin.com',
+        password: 'me1'
     },
 
     manager: {
-        emailId: 'admin@gvk.com',
-        password: 'Mewurk@123',
+        emailId: 'admincom',
+        password: 'Me1',
     },
 
     employee: {
